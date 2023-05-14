@@ -1,4 +1,5 @@
 #!/bin/bash
+
 #SBATCH --partition red
 #SBATCH --nodes 1
 #SBATCH --ntasks-per-node 1
@@ -7,6 +8,7 @@
 #SBATCH --output logs/jupyter.log
 #SBATCH --mem=32G
 #SBATCH --account=students
+#SBATCH --gres=gpu
 # get tunneling info
 XDG_RUNTIME_DIR=""
 port=$(shuf -i8000-9999 -n1)
@@ -33,12 +35,8 @@ localhost:${port}  (prefix w/ https:// if using password)
 
 # load modules or conda environments here
 module --ignore-cache load singularity/3.4.1
-module --ignore-cache load CUDA/10.2.89-GCC-8.3.0
-
-source venv/bin/activate
-# pip install -r requirements.txt
-
+module --ignore-cache load CUDA/11.1.1-GCC-10.2.0
 
 # DON'T USE ADDRESS BELOW.
 # DO USE TOKEN BELOW
-singularity exec container.sif jupyter lab --ip=0.0.0.0 --no-browser --allow-root jupyter lab --port=${port}
+singularity exec --nv container.sif jupyter lab --no-browser --port=${port} --ip=0.0.0.0

@@ -2,5 +2,6 @@ data/
 logs/
 **/*.sif
 **/*.zip
+**/.ipynb_checkpoints
 
 
