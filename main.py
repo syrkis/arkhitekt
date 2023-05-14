@@ -1,2 +1,1 @@
-import jax
-print(jax.devices())
+import torch
