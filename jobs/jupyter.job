@@ -1,0 +1,43 @@
+#!/bin/bash
+#SBATCH --partition red
+#SBATCH --nodes 1
+#SBATCH --ntasks-per-node 1
+#SBATCH --time 03:00:00
+#SBATCH --job-name jupyter-notebook
+#SBATCH --output logs/jupyter_%j.log
+#SBATCH --mem=32G
+# get tunneling info
+XDG_RUNTIME_DIR=""
+port=$(shuf -i8000-9999 -n1)
+node=$(hostname -s)
+user=$(whoami)
+cluster=$(hostname -f | awk -F"." '{print $2}')
+
+# print tunneling instructions jupyter-log
+echo -e "
+MacOS or linux terminal command to create your ssh tunnel
+ssh -N -L ${port}:${node}:${port} ${user}@hpc.itu.dk
+
+Windows MobaXterm info
+Forwarded port: ${port}
+Remote server: ${node}
+Remote port: ${port}
+SSH server: hpc.itu.dk
+SSH login: $user
+SSH port: 22
+
+Use a Browser on your local machine to go to:
+localhost:${port}  (prefix w/ https:// if using password)
+"
+
+# load modules or conda environments here
+module --ignore-cache load singularity/3.4.1
+module --ignore-cache load CUDA/10.2.89-GCC-8.3.0
+
+source venv/bin/activate
+# pip install -r requirements.txt
+
+
+# DON'T USE ADDRESS BELOW.
+# DO USE TOKEN BELOW
+singularity exec container.sif jupyter lab --ip=0.0.0.0 --no-browser --allow-root jupyter lab --port=${port}
