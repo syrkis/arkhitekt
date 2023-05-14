@@ -4,8 +4,9 @@
 #SBATCH --ntasks-per-node 1
 #SBATCH --time 03:00:00
 #SBATCH --job-name jupyter-notebook
-#SBATCH --output logs/jupyter_%j.log
+#SBATCH --output logs/jupyter.log
 #SBATCH --mem=32G
+#SBATCH --account=students
 # get tunneling info
 XDG_RUNTIME_DIR=""
 port=$(shuf -i8000-9999 -n1)
